@@ -14,14 +14,31 @@ function CircCollision
     puck_radius = puck_size/2;
     peg_size    = 8;
     peg_radius  = peg_size/2; 
+    number_of_peaks = 6;
     
-    walls = [50 150 250 250; 
-             30 350 0 400; 
-             0 300 30 350];
+    walls = zeros(number_of_peaks, 4);
+    for i = 1:number_of_peaks
+        y1 = hight - (i-1)*50;
+        y2 = y1 - 50;
+        if mod(i,2)==0
+            walls(i,:) = [0 y2 30 y1];
+        else
+            walls(i,:) = [30 y2 0 y1];
+        end
+    end
+%     for i = 1:number_of_peaks
+%         y1 = hight - (i-1)*50;
+%         y2 = y1 - 50;
+%         if mod(i,2)==0
+%             walls(i+number_of_peaks,:) = [width y2 width-30 y1];
+%         else
+%             walls(i+number_of_peaks,:) = [width-30 y2 width y1];
+%         end
+%     end
 
     pos = [x y];
     pos2= [x+peg_radius y-40];
-    pos = [30 250];
+    pos = [width-30 50];
     vel = [0 1];
     
     figure_handle = figure(1);
@@ -45,7 +62,7 @@ function drawcircle
 
     circleplot(pos(1), pos(2), puck_radius, 'r') 
     hold on
-    for i = 1:3
+    for i = 1:size(walls,1)
         wall = walls(i,:);
         plot([wall(1) wall(3)], [wall(2) wall(4)]);
     end
@@ -73,7 +90,7 @@ function drawcircle
     end
     
     %Detect collision with walls
-    for i = 1:3
+    for i = 1:size(walls,1)
         wall = walls(i,:);
         if wall_collision(wall) == 1
             disp('within line!')
